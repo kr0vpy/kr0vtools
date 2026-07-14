@@ -1,12 +1,12 @@
-# 🛠️ KR0VTOOLS — Panel Multi-Tools
+# KR0VTOOLS — Panel Multi-Tools
 
 Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz TUI coloreada. Compatible con **Linux** y **Windows**.
 
 ---
 
-## 🚀 Características
+## Características ↓
 
-### 📡 Discord
+### Discord
 | Herramienta | Descripción |
 |-------------|-------------|
 | Webhook Spammer | Envía mensajes masivos a webhooks con delay configurable |
@@ -21,7 +21,7 @@ Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz T
 | Token Decoder | Decodifica user ID, timestamp y antigüedad |
 | Server Nuker | Spam multi-canal, delete canales, ban all, create canales |
 
-### 🌐 OSINT
+### OSINT
 - **IP Info** — Geolocalización, ISP, AS, organización vía ip-api.com
 - **IP Logger** — Genera enlaces de rastreo (Grabify / IPLogger)
 - **Email Lookup** — Validación y búsqueda de filtraciones (Have I Been Pwned)
@@ -30,7 +30,7 @@ Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz T
 - **Username Check** — Busca un username en 20+ plataformas (Instagram, GitHub, Reddit, TikTok, etc.)
 - **Metadata Extractor** — Extrae metadatos de imágenes, PDFs, audios y videos
 
-### 🔍 Network
+###  Network
 - **WiFi Scanner** — Escanea redes inalámbricas (nmcli/iw en Linux, netsh en Windows)
 - **DNS Lookup** — Consulta A, AAAA, MX, NS, TXT, CNAME
 - **Traceroute** — Traza rutas de red (traceroute/tracert según SO)
@@ -40,28 +40,28 @@ Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz T
 - **Subdomain Finder** — Descubre subdominios por fuerza bruta (wordlist 40+)
 - **Directory Brute** — Fuerza bruta de directorios y archivos comunes
 
-### 🔬 Scanners
+### Scanners
 - **Port Scanner** — TCP/UDP con detección de servicios y banners
 - **Vulnerability Scanner** — SQLi, XSS, Open Redirect, SSTI, Path Traversal, Command Injection, seguridad en cabeceras y paths expuestos
 
-### 🧰 Utilidades
+### Utilidades
 - **ID Generator** — Genera IDs ofuscados cortos y únicos
 - **Hasher** — MD5, SHA1, SHA256
 - **Base64 Tool** — Codificar/decodificar
 - **Token Decode** — Decodifica tokens Discord sin verificar
 
-### 🕸️ Web Scraping
+### Web Scraping
 - Link Extractor, Email Scraper, Meta Tags, Image Downloader
 
-### 🎭 Social Engineering
+### Social Engineering
 - Fake Identity Generator, QR Generator, Link Obfuscator, User-Agent Generator
 
-### 🔌 Sistema de Plugins
+### Sistema de Plugins
 Carga dinámicamente scripts `.py` desde `~/.config/0xytool/plugins/`. Cada plugin necesita `PLUGIN_NAME`, `PLUGIN_DESC` y función `menu()` o `run()`.
 
 ---
 
-## 📦 Instalación
+## Instalación
 
 ```bash
 git clone https://github.com/kr0vpy/kr0vtools.git
@@ -105,7 +105,7 @@ Ejecutar `./ejecutar.sh` o `python3 skeez.py`
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 kr0vtools/
@@ -136,7 +136,7 @@ kr0vtools/
 
 ---
 
-## ⚙️ Configuración
+## Configuración
 
 Los datos de sesión y configuración se guardan en `~/.config/0xytool/`:
 
@@ -148,7 +148,7 @@ Los datos de sesión y configuración se guardan en `~/.config/0xytool/`:
 
 ---
 
-## ⌨️ Controles
+## Controles
 
 | Tecla | Acción |
 |-------|--------|
@@ -161,12 +161,12 @@ Los datos de sesión y configuración se guardan en `~/.config/0xytool/`:
 
 ---
 
-## ⚠️ Aviso Legal
+## Aviso Legal
 
 Esta herramienta es solo para **uso educativo** y **pruebas de seguridad autorizadas**. El uso indebido de esta herramienta para atacar sistemas sin consentimiento es ilegal. El autor no se responsabiliza por el mal uso que se le pueda dar.
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 MIT
