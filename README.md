@@ -1,54 +1,54 @@
-# KR0VTOOLS — Panel Multi-Tools
+# KR0VTOOLS — Multi-Tools Panel
 
-Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz TUI coloreada. Compatible con **Linux** y **Windows**.
+Integral pentesting, OSINT, networking, scraping and utilities panel with a colored TUI interface. Compatible with **Linux** and **Windows**.
 
 ---
 
-## Características ↓
+## Features ↓
 
 ### Discord
-| Herramienta | Descripción |
+| Tool | Description |
 |-------------|-------------|
-| Webhook Spammer | Envía mensajes masivos a webhooks con delay configurable |
-| Webhook Info | Obtiene información detallada de un webhook |
-| Webhook Deleter | Elimina webhooks remotos |
-| Webhook Embed | Envía embeds personalizados con color, footer e imagen |
-| Webhook Spoof | Modifica nombre y avatar de un webhook |
-| Token Generator | Genera tokens con formato Discord (solo broma) |
-| Token Verifier | Verifica validez de tokens y muestra datos del usuario |
-| Token Mass Checker | Verifica cientos de tokens desde archivo |
-| Token Nitro Checker | Revisa suscripciones Nitro activas |
-| Token Decoder | Decodifica user ID, timestamp y antigüedad |
-| Server Nuker | Spam multi-canal, delete canales, ban all, create canales |
+| Webhook Spammer | Sends mass messages to webhooks with configurable delay |
+| Webhook Info | Gets detailed info from a webhook |
+| Webhook Deleter | Deletes remote webhooks |
+| Webhook Embed | Sends custom embeds with color, footer and image |
+| Webhook Spoof | Changes webhook name and avatar |
+| Token Generator | Generates Discord-format tokens (joke only) |
+| Token Verifier | Checks token validity and shows user data |
+| Token Mass Checker | Verifies hundreds of tokens from file |
+| Token Nitro Checker | Checks active Nitro subscriptions |
+| Token Decoder | Decodes user ID, timestamp and age |
+| Server Nuker | Multi-channel spam, delete channels, ban all, create channels |
 
 ### OSINT
-- **IP Info** — Geolocalización, ISP, AS, organización vía ip-api.com
-- **IP Logger** — Genera enlaces de rastreo (Grabify / IPLogger)
-- **Email Lookup** — Validación y búsqueda de filtraciones (Have I Been Pwned)
-- **Phone Lookup** — País, operador, zona horaria vía phonenumbers
-- **WHOIS** — Consulta WHOIS de dominios
-- **Username Check** — Busca un username en 20+ plataformas (Instagram, GitHub, Reddit, TikTok, etc.)
-- **Metadata Extractor** — Extrae metadatos de imágenes, PDFs, audios y videos
+- **IP Info** — Geolocation, ISP, AS, organization via ip-api.com
+- **IP Logger** — Generates tracking links (Grabify / IPLogger)
+- **Email Lookup** — Validation and breach search (Have I Been Pwned)
+- **Phone Lookup** — Country, carrier, timezone via phonenumbers
+- **WHOIS** — Domain WHOIS lookup
+- **Username Check** — Searches a username across 20+ platforms (Instagram, GitHub, Reddit, TikTok, etc.)
+- **Metadata Extractor** — Extracts metadata from images, PDFs, audio and video files
 
-###  Network
-- **WiFi Scanner** — Escanea redes inalámbricas (nmcli/iw en Linux, netsh en Windows)
-- **DNS Lookup** — Consulta A, AAAA, MX, NS, TXT, CNAME
-- **Traceroute** — Traza rutas de red (traceroute/tracert según SO)
-- **HTTP Headers** — Muestra cabeceras de respuesta HTTP
-- **SSL Checker** — Información del certificado SSL (emisor, vigencia, SAN, cipher)
-- **MAC Lookup** — Identifica fabricante por dirección MAC
-- **Subdomain Finder** — Descubre subdominios por fuerza bruta (wordlist 40+)
-- **Directory Brute** — Fuerza bruta de directorios y archivos comunes
+### Network
+- **WiFi Scanner** — Scans wireless networks (nmcli/iw on Linux, netsh on Windows)
+- **DNS Lookup** — Queries A, AAAA, MX, NS, TXT, CNAME records
+- **Traceroute** — Traces network routes (traceroute/tracert per OS)
+- **HTTP Headers** — Displays HTTP response headers
+- **SSL Checker** — SSL certificate info (issuer, validity, SAN, cipher)
+- **MAC Lookup** — Identifies manufacturer by MAC address
+- **Subdomain Finder** — Discovers subdomains via brute force (40+ wordlist)
+- **Directory Brute** — Brute forces common directories and files
 
 ### Scanners
-- **Port Scanner** — TCP/UDP con detección de servicios y banners
-- **Vulnerability Scanner** — SQLi, XSS, Open Redirect, SSTI, Path Traversal, Command Injection, seguridad en cabeceras y paths expuestos
+- **Port Scanner** — TCP/UDP with service detection and banners
+- **Vulnerability Scanner** — SQLi, XSS, Open Redirect, SSTI, Path Traversal, Command Injection, header security and exposed paths
 
-### Utilidades
-- **ID Generator** — Genera IDs ofuscados cortos y únicos
+### Utilities
+- **ID Generator** — Generates short unique obfuscated IDs
 - **Hasher** — MD5, SHA1, SHA256
-- **Base64 Tool** — Codificar/decodificar
-- **Token Decode** — Decodifica tokens Discord sin verificar
+- **Base64 Tool** — Encode/decode
+- **Token Decode** — Decodes Discord tokens without verifying
 
 ### Web Scraping
 - Link Extractor, Email Scraper, Meta Tags, Image Downloader
@@ -56,12 +56,12 @@ Panel integral de pentesting, OSINT, redes, scraping y utilidades con interfaz T
 ### Social Engineering
 - Fake Identity Generator, QR Generator, Link Obfuscator, User-Agent Generator
 
-### Sistema de Plugins
-Carga dinámicamente scripts `.py` desde `~/.config/0xytool/plugins/`. Cada plugin necesita `PLUGIN_NAME`, `PLUGIN_DESC` y función `menu()` o `run()`.
+### Plugin System
+Dynamically loads `.py` scripts from `~/.config/0xytool/plugins/`. Each plugin needs `PLUGIN_NAME`, `PLUGIN_DESC` and a `menu()` or `run()` function.
 
 ---
 
-## Instalación
+## Installation
 
 ```bash
 git clone https://github.com/kr0vpy/kr0vtools.git
@@ -71,26 +71,26 @@ python skeez.py
 ```
 
 ### Windows
-Ejecutar `ejecutar.bat` o `python skeez.py`
+Run `ejecutar.bat` or `python skeez.py`
 
 ### Linux
-Ejecutar `./ejecutar.sh` o `python3 skeez.py`
+Run `./ejecutar.sh` or `python3 skeez.py`
 
-### Dependencias opcionales
-- `Pillow` — metadatos de imágenes
-- `phonenumbers` — lookup telefónico
-- `qrcode` — generación de QR
-- `mutagen` — metadatos de audio
-- `PyPDF2` — metadatos de PDF
+### Optional dependencies
+- `Pillow` — image metadata
+- `phonenumbers` — phone lookup
+- `qrcode` — QR generation
+- `mutagen` — audio metadata
+- `PyPDF2` — PDF metadata
 
 ---
 
-## 🖥️ Compatibilidad
+## Compatibility
 
-| Función | Linux | Windows |
+| Feature | Linux | Windows |
 |---------|-------|---------|
 | Discord tools | ✅ | ✅ |
-| OSINT vía HTTP | ✅ | ✅ |
+| OSINT via HTTP | ✅ | ✅ |
 | Port Scanner | ✅ | ✅ |
 | Vulnerability Scanner | ✅ | ✅ |
 | Web Scraping | ✅ | ✅ |
@@ -99,74 +99,74 @@ Ejecutar `./ejecutar.sh` o `python3 skeez.py`
 | WiFi Scanner | ✅ nmcli/iw | ✅ netsh |
 | DNS Lookup | ✅ dig | ✅ nslookup + socket |
 | Traceroute | ✅ traceroute | ✅ tracert |
-| WHOIS | ✅ whois | ✅ vía web |
+| WHOIS | ✅ whois | ✅ via web |
 | Metadata Extractor | ✅ | ✅ |
 | ID Generator / Hasher / Base64 | ✅ | ✅ |
 
 ---
 
-## Estructura del proyecto
+## Project structure
 
 ```
 kr0vtools/
 ├── skeez.py                  # Entry point
-├── ejecutar.bat              # Lanzador Windows
-├── ejecutar.sh               # Lanzador Linux
-├── requirements.txt          # Dependencias
+├── ejecutar.bat              # Windows launcher
+├── ejecutar.sh               # Linux launcher
+├── requirements.txt          # Dependencies
 ├── .gitignore
 ├── README.md
 │
 ├── tools/
-│   ├── base.py               # UI, config, spinner, exportación
+│   ├── base.py               # UI, config, spinner, export
 │   ├── webhook.py            # Discord webhook tools
 │   ├── token.py              # Discord token tools
-│   ├── scanner.py            # Port scanner TCP/UDP
+│   ├── scanner.py            # TCP/UDP port scanner
 │   ├── osint.py              # OSINT tools
-│   ├── utils.py              # Utilidades varias
+│   ├── utils.py              # Miscellaneous utilities
 │   ├── network.py            # Network tools
 │   ├── web.py                # Web scraping
 │   ├── social.py             # Social engineering
 │   ├── sqli.py               # Vulnerability scanner
 │   ├── nuke.py               # Discord server nuker
-│   └── plugins.py            # Sistema de plugins
+│   └── plugins.py            # Plugin system
 │
 └── tests/
-    └── test_tools.py         # Tests unitarios
+    └── test_tools.py         # Unit tests
 ```
 
 ---
 
-## Configuración
+## Configuration
 
-Los datos de sesión y configuración se guardan en `~/.config/0xytool/`:
+Session data and config are stored in `~/.config/0xytool/`:
 
-| Archivo | Propósito |
+| File | Purpose |
 |---------|-----------|
-| `config.json` | Preferencias (modo compacto, timeouts, hilos, API keys) |
-| `session.log` | Registro de actividad |
-| `*.json` / `*.html` | Reportes exportados (scans, vulnerabilidades, subdominios) |
+| `config.json` | Preferences (compact mode, timeouts, threads, API keys) |
+| `session.log` | Activity log |
+| `*.json` / `*.html` | Exported reports (scans, vulnerabilities, subdomains) |
 
 ---
 
-## Controles
+## Controls
 
-| Tecla | Acción |
+| Key | Action |
 |-------|--------|
-| `1-9` | Navegación por menús |
-| `0` | Volver al menú anterior |
-| `H` | Ayuda |
-| `C` | Alternar modo compacto |
-| `X` | Salir |
-| `Tab` | Autocompletado (Linux) |
+| `1-9` | Menu navigation |
+| `0` | Go back to previous menu |
+| `H` | Help |
+| `C` | Toggle compact mode |
+| `X` | Exit |
+| `Tab` | Autocomplete (Linux) |
 
 ---
 
-## Aviso Legal
+## Disclaimer
 
-Esta herramienta es solo para **uso educativo** y **pruebas de seguridad autorizadas**. El uso indebido de esta herramienta para atacar sistemas sin consentimiento es ilegal. El autor no se responsabiliza por el mal uso que se le pueda dar.
+This tool is for **educational purposes** and **authorized security testing only**. Misuse of this tool to attack systems without consent is illegal. The author is not responsible for any misuse.
 
 ---
 
-## Licencia
+## License
 
 MIT
