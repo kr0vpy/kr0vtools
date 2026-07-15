@@ -215,12 +215,12 @@ def print_banner():
 
 def barra_menu(titulo):
     p = pad_centro()
-    print(f"\n{p}{R2}─── {W}{titulo}{RS} {D}{'─' * max(ANCHO - len(titulo) - 7, 1)}{RS}")
+    print(f"\n{p}{R2}─── {W}{titulo}{RS} {R1}{'─' * max(ANCHO - len(titulo) - 7, 1)}{RS}")
 
 def area_header(nombre):
     p = pad_centro()
-    print(f"{p}{D}{'─' * ANCHO}{RS}")
-    print(f"{p}{R2}── {W}{nombre}{RS} {D}{'─' * max(ANCHO - len(nombre) - 6, 1)}{RS}")
+    print(f"{p}{R1}{'─' * ANCHO}{RS}")
+    print(f"{p}{R2}── {W}{nombre}{RS} {R1}{'─' * max(ANCHO - len(nombre) - 6, 1)}{RS}")
 
 def menu_en_columnas(items, cols=2):
     p = pad_centro()
@@ -299,7 +299,7 @@ def menu_horizontal(columnas):
         vis = re.sub(r'\033\[[0-9;]*m', '', nombre)
         extra = len(sub) + 3 if sub else 0
         relleno = anchos[i] - 1 - len(vis) - extra
-        cabeceras.append(f"{R1}{rama(i)}{RS}{R2}{nombre}{RS}{sub_txt(nombre, sub)}{D}{'─' * max(relleno, 1)}{RS}{sep(i)}")
+        cabeceras.append(f"{R1}{rama(i)}{RS}{R2}{nombre}{RS}{sub_txt(nombre, sub)}{R1}{'─' * max(relleno, 1)}{RS}{sep(i)}")
 
     print(p + "".join(cabeceras))
 
@@ -313,7 +313,7 @@ def menu_horizontal(columnas):
             idx = r - offset
             has_item = 0 <= idx < nitems
             if has_item:
-                linea += tubo(i, idx, nitems)
+                linea += f"{R1}{tubo(i, idx, nitems)}{RS}"
                 k, t = items[idx]
                 vis = f"[{k}] {t}"
                 relleno = anchos[i] - 1 - len(vis)

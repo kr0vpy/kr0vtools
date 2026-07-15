@@ -57,9 +57,9 @@ def main():
                 ("NETWORK", "",    [("6","Scanner"),("7","Network"),("8","Scraping")]),
                 ("UTILITY", "",    [("U","Utils"),  ("9","VulnScan"),("P","Plugins")]),
             ])
-            print(f"{p}{D}{'─' * ANCHO}{RS}")
+            print(f"{p}{R1}{'─' * ANCHO}{RS}")
             print(f"{p}   {W}→ Extras:{RS}  {R2}[H]{RS} {W}Help{RS}  {R2}[C]{RS} {W}Compact mode{RS}  {R2}[X]{RS} {W}Exit{RS}")
-            print(f"{p}{D}{'─' * ANCHO}{RS}")
+            print(f"{p}{R1}{'─' * ANCHO}{RS}")
             op = input(f"{p}{R2}>>{RS} ").strip().lower()
             if op == "1": menu_webhook()
             elif op == "2": menu_token()
