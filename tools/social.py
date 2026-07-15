@@ -23,28 +23,28 @@ def soc_fake_id():
     cc_cvv = f"{random.randint(100,999)}"
     tel = f"+34{random.randint(600000000, 799999999)}"
     print(f"""
-  {R2}Nombre:{RS}      {W}{nombre} {apellido} {apellido2}{RS}
-  {R2}Edad:{RS}        {W}{edad}{RS}
+  {R2}Name:{RS}      {W}{nombre} {apellido} {apellido2}{RS}
+  {R2}Age:{RS}        {W}{edad}{RS}
   {R2}DOB:{RS}        {W}{dia:02d}/{mes:02d}/{anio}{RS}
-  {R2}Ciudad:{RS}     {W}{ciudad}{RS}
+  {R2}City:{RS}     {W}{ciudad}{RS}
   {R2}Email:{RS}      {W}{email}{RS}
-  {R2}Telefono:{RS}   {W}{tel}{RS}
-  {R2}Tarjeta:{RS}    {W}{cc_num} ({cc_venc} CVV:{cc_cvv}){RS}
+  {R2}Phone:{RS}   {W}{tel}{RS}
+  {R2}Card:{RS}    {W}{cc_num} ({cc_venc} CVV:{cc_cvv}){RS}
 """)
-    guardar = input(f"  {R2}Guardar? (s/N){RS} > ").strip().lower()
-    if guardar == "s":
+    guardar = input(f"  {R2}Save? (y/N){RS} > ").strip().lower()
+    if guardar == "y":
         ident = {"nombre": f"{nombre} {apellido} {apellido2}", "edad": edad,
                  "email": email, "telefono": tel, "tarjeta": cc_num}
         path = exportar_json(f"fake_id_{int(time.time())}.json", ident)
-        print(f"  {R1}[+] Guardado en {path}{RS}")
+        print(f"  {R1}[+] Saved to {path}{RS}")
     pausa()
 
 def soc_qr():
     limpiar(); barra_menu("SOCIAL - QR GENERATOR")
     try: import qrcode
     except ImportError:
-        print(f"  {D}[!] qrcode no instalado. Instala: pip install qrcode{pillow}{RS}")
-    data = input(f"  {R2}Texto o URL{RS} > ").strip()
+        print(f"  {D}[!] qrcode not installed. Install: pip install qrcode[pillow]{RS}")
+    data = input(f"  {R2}Text or URL{RS} > ").strip()
     if not data: return pausa()
     try:
         import qrcode
@@ -54,23 +54,23 @@ def soc_qr():
         img = qr.make_image(fill_color="black", back_color="white")
         path = f"qr_{int(time.time())}.png"
         img.save(path)
-        print(f"  {R1}[+] QR guardado en {path}{RS}")
-        print(f"  {D}[!] Abrelo con cualquier visor de imagenes{RS}")
+        print(f"  {R1}[+] QR saved to {path}{RS}")
+        print(f"  {D}[!] Open it with any image viewer{RS}")
     except ImportError:
-        print(f"\n  {R2}Texto codificado en QR:{RS}")
+        print(f"\n  {R2}Text encoded in QR:{RS}")
         print(f"  {W}{data}{RS}")
         print(f"  {D}Usa https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={urllib.parse.quote(data)}{RS}")
     pausa()
 
 def soc_obfuscator():
     limpiar(); barra_menu("SOCIAL - LINK OBFUSCATOR")
-    url = input(f"  {R2}URL a ofuscar{RS} > ").strip()
+    url = input(f"  {R2}URL to obfuscate{RS} > ").strip()
     if not url: return pausa()
-    print(f"\n  {R2}Metodos:{RS}")
+    print(f"\n  {R2}Methods:{RS}")
     print(f"  {W}[1] Base64 encode{RS}")
     print(f"  {W}[2] URL encoded{RS}")
     print(f"  {W}[3] TinyURL (acortador){RS}")
-    op = input(f"\n  {R2}Selecciona{RS} > ").strip()
+    op = input(f"\n  {R2}Select{RS} > ").strip()
     if op == "1":
         enc = base64.b64encode(url.encode()).decode()
         print(f"\n  {R1}[+] Base64:{RS}\n  {W}{enc}{RS}")
@@ -81,9 +81,9 @@ def soc_obfuscator():
         try:
             req = urllib.request.Request(f"https://tinyurl.com/api-create.php?url={urllib.parse.quote(url)}", headers={"User-Agent": UA})
             with urllib.request.urlopen(req, timeout=10) as r:
-                print(f"\n  {R1}[+] Acortado:{RS}\n  {W}{r.read().decode().strip()}{RS}")
-        except: print(f"  {D}[!] Error al acortar{RS}")
-    else: print(f"  {D}[!] Opcion invalida{RS}")
+                print(f"\n  {R1}[+] Shortened:{RS}\n  {W}{r.read().decode().strip()}{RS}")
+        except: print(f"  {D}[!] Error shortening{RS}")
+    else: print(f"  {D}[!] Invalid option{RS}")
     pausa()
 
 def soc_ua():
@@ -100,7 +100,7 @@ def soc_ua():
         "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:127.0) Gecko/20100101 Firefox/127.0",
         "Mozilla/5.0 (iPad; CPU OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148",
     ]
-    print(f"  {D}User-Agent aleatorio generado:{RS}\n")
+    print(f"  {D}Random User-Agent generated:{RS}\n")
     for _ in range(5):
         print(f"  {W}{random.choice(uas)}{RS}\n")
     pausa()
@@ -112,7 +112,7 @@ def menu_social():
             barra_menu("SOCIAL ENGINEERING TOOLS")
             print()
             menu_en_columnas([("1","Fake Identity"),("2","QR Generator"),
-                             ("3","Link Obfuscator"),("4","UA Generator"),("",""),("0","Volver")])
+                             ("3","Link Obfuscator"),("4","UA Generator"),("",""),("0","Back")])
             print()
             op = input(f"  {R2}>>{RS} ").strip().lower()
             if op == "1": soc_fake_id()

@@ -5,7 +5,7 @@ def web_links():
     url = input(f"  {R2}URL{RS} > ").strip()
     if not url: return pausa()
     if not url.startswith("http"): url = "https://" + url
-    print(f"\n  {D}[+] Extrayendo links...{RS}\n")
+    print(f"\n  {D}[+] Extracting links...{RS}\n")
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r:
@@ -16,12 +16,12 @@ def web_links():
         for link in sorted(set(links)):
             if dominio_base in link: internos.append(link)
             else: externos.append(link)
-        print(f"  {R2}Internos ({len(internos)}):{RS}")
+        print(f"  {R2}Internal ({len(internos)}):{RS}")
         for l in internos[:15]: print(f"    {W}{l[:80]}{RS}")
-        print(f"\n  {R2}Externos ({len(externos)}):{RS}")
+        print(f"\n  {R2}External ({len(externos)}):{RS}")
         for l in externos[:15]: print(f"    {W}{l[:80]}{RS}")
         if len(internos) + len(externos) > 30:
-            print(f"  {D}[+] ... y {len(internos)+len(externos)-30} mas{RS}")
+            print(f"  {D}[+] ... and {len(internos)+len(externos)-30} more{RS}")
     except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
 
@@ -30,16 +30,16 @@ def web_emails():
     url = input(f"  {R2}URL{RS} > ").strip()
     if not url: return pausa()
     if not url.startswith("http"): url = "https://" + url
-    print(f"\n  {D}[+] Buscando emails...{RS}\n")
+    print(f"\n  {D}[+] Searching emails...{RS}\n")
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r:
             html = r.read().decode("utf-8", errors="ignore")
         emails = sorted(set(re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', html)))
         if emails:
-            print(f"  {R1}[+] {len(emails)} emails encontrados:{RS}")
+            print(f"  {R1}[+] {len(emails)} emails found:{RS}")
             for e in emails: print(f"    {W}{e}{RS}")
-        else: print(f"  {D}[!] No se encontraron emails{RS}")
+        else: print(f"  {D}[!] No emails found{RS}")
     except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
 
@@ -48,7 +48,7 @@ def web_meta():
     url = input(f"  {R2}URL{RS} > ").strip()
     if not url: return pausa()
     if not url.startswith("http"): url = "https://" + url
-    print(f"\n  {D}[+] Extrayendo meta tags...{RS}\n")
+    print(f"\n  {D}[+] Extracting meta tags...{RS}\n")
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r:
@@ -66,22 +66,22 @@ def web_meta():
 
 def web_images():
     limpiar(); barra_menu("WEB - IMAGE DOWNLOADER")
-    url = input(f"  {R2}URL de pagina con imagenes{RS} > ").strip()
+    url = input(f"  {R2}Page URL with images{RS} > ").strip()
     if not url: return pausa()
     if not url.startswith("http"): url = "https://" + url
-    print(f"\n  {D}[+] Buscando imagenes...{RS}\n")
+    print(f"\n  {D}[+] Searching images...{RS}\n")
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r:
             html = r.read().decode("utf-8", errors="ignore")
         imgs = re.findall(r'<img[^>]+src=["\']([^"\']+)["\']', html, re.I)
-        if not imgs: print(f"  {D}[!] No se encontraron imagenes{RS}"); return pausa()
-        print(f"  {R1}[+] {len(imgs)} imagenes encontradas:{RS}")
+        if not imgs: print(f"  {D}[!] No images found{RS}"); return pausa()
+        print(f"  {R1}[+] {len(imgs)} images found:{RS}")
         for img in imgs[:20]: print(f"    {W}{img[:90]}{RS}")
-        desc = input(f"\n  {R2}Descargar? (s/N){RS} > ").strip().lower()
-        if desc == "s":
+        desc = input(f"\n  {R2}Download? (y/N){RS} > ").strip().lower()
+        if desc == "y":
             os.makedirs("downloads", exist_ok=True)
-            sp = Spinner("Descargando"); sp.start()
+            sp = Spinner("Downloading"); sp.start()
             for i, img in enumerate(imgs[:20]):
                 try:
                     if img.startswith("//"): img = "https:" + img
@@ -94,7 +94,7 @@ def web_images():
                         with open(path, "wb") as f: f.write(ir.read())
                 except: pass
             sp.stop()
-            print(f"  {R1}[+] Descargadas en downloads/{RS}")
+            print(f"  {R1}[+] Downloaded to downloads/{RS}")
     except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
 
@@ -105,7 +105,7 @@ def menu_web():
             barra_menu("WEB SCRAPING TOOLS")
             print()
             menu_en_columnas([("1","Link Extractor"),("2","Email Scraper"),
-                             ("3","Meta Tags"),("4","Image Downloader"),("",""),("0","Volver")])
+                             ("3","Meta Tags"),("4","Image Downloader"),("",""),("0","Back")])
             print()
             op = input(f"  {R2}>>{RS} ").strip().lower()
             if op == "1": web_links()

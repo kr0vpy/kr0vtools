@@ -59,11 +59,11 @@ class VulnerabilityScanner:
                 with urllib.request.urlopen(req, timeout=8) as r:
                     html = r.read().decode("utf-8", errors="ignore")
                     if payload in html or urllib.parse.quote(payload) in html:
-                        self.add(vuln_type, f"Parametro '{param}' reflejado", payload, "high")
+                        self.add(vuln_type, f"Parameter '{param}' reflected", payload, "high")
                         return True
             except urllib.error.HTTPError as e:
                 if e.code in (500, 400):
-                    self.add(vuln_type, f"Parametro '{param}' -> HTTP {e.code}", payload, "medium")
+                    self.add(vuln_type, f"Parameter '{param}' -> HTTP {e.code}", payload, "medium")
             except: pass
         return False
 
@@ -86,7 +86,7 @@ class VulnerabilityScanner:
                         with urllib.request.urlopen(req, timeout=8) as r:
                             resp_html = r.read().decode("utf-8", errors="ignore")
                             if payload in resp_html:
-                                self.add(vuln_type, f"Form input '{inp}' reflejado", payload, "high")
+                                self.add(vuln_type, f"Form input '{inp}' reflected", payload, "high")
                     except: pass
 
     def check_headers(self):
@@ -106,10 +106,10 @@ class VulnerabilityScanner:
                 req = urllib.request.Request(f"{self.url}/{path}", headers={"User-Agent": UA})
                 with urllib.request.urlopen(req, timeout=5) as r:
                     if r.status == 200:
-                        self.add("Exposed Path", f"Path accesible: /{path}", "", "medium")
+                        self.add("Exposed Path", f"Accessible path: /{path}", "", "medium")
             except urllib.error.HTTPError as e:
                 if e.code == 403:
-                    self.add("Exposed Path", f"Path bloqueado (403): /{path}", "", "low")
+                    self.add("Exposed Path", f"Blocked path (403): /{path}", "", "low")
             except: pass
 
     def scan(self):
@@ -128,35 +128,35 @@ class VulnerabilityScanner:
 
 def menu_sqli():
     limpiar(); barra_menu("VULNERABILITY SCANNER")
-    url = input(f"  {R2}URL a escanear{RS} > ").strip()
+    url = input(f"  {R2}URL to scan{RS} > ").strip()
     if not url: return pausa()
     if not url.startswith("http"): url = "https://" + url
 
-    print(f"\n  {D}[+] Escaneando {url}...{RS}\n")
-    sp = Spinner("Analizando vulnerabilidades"); sp.start()
+    print(f"\n  {D}[+] Scanning {url}...{RS}\n")
+    sp = Spinner("Analyzing vulnerabilities"); sp.start()
     scanner = VulnerabilityScanner(url)
     scanner.scan()
     sp.stop()
 
     if not scanner.findings:
-        print(f"  {R1}[+] No se detectaron vulnerabilidades evidentes{RS}")
+        print(f"  {R1}[+] No obvious vulnerabilities detected{RS}")
     else:
         severidad = {"high": f"{R1}HIGH{RS}", "medium": f"{R2}MEDIUM{RS}", "low": f"{D}LOW{RS}"}
-        print(f"  {R2}{'SEVERIDAD':<10} {'TIPO':<20} {'DETALLE'}{RS}")
+        print(f"  {R2}{'SEVERITY':<10} {'TYPE':<20} {'DETAIL'}{RS}")
         print(f"  {'─' * 70}")
         for f in scanner.findings:
             sev = severidad.get(f["severity"], f["severity"])
             tipo = f["type"][:18]
             print(f"  {sev:<10} {W}{tipo:<20}{RS} {D}{f['detail'][:50]}{RS}")
 
-        opc = input(f"\n  {R2}Exportar? (J=JSON, H=HTML, N=no) [N]{RS} > ").strip().upper()
+        opc = input(f"\n  {R2}Export? (J=JSON, H=HTML, N=no) [N]{RS} > ").strip().upper()
         domain = re.sub(r'https?://', '', url).split('/')[0]
         if opc == "J":
             path = exportar_json(f"vuln_{domain}.json", scanner.findings)
-            print(f"  {R1}[+] Guardado en {path}{RS}")
+            print(f"  {R1}[+] Saved to {path}{RS}")
         elif opc == "H":
             cols = ["Severidad", "Tipo", "Detalle", "Payload"]
             filas = [[f["severity"].upper(), f["type"], f["detail"][:60], f["payload"][:40]] for f in scanner.findings]
             path = exportar_html(f"vuln_{domain}.html", f"Vulnerabilidades: {domain}", cols, filas)
-            print(f"  {R1}[+] Reporte HTML en {path}{RS}")
+            print(f"  {R1}[+] HTML report at {path}{RS}")
     pausa()

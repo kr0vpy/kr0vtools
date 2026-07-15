@@ -22,13 +22,13 @@ try:
     from colorama import Fore, Style, init
     init(autoreset=True)
 except:
-    class Fore: LIGHTRED_EX=RED=LIGHTBLACK_EX=LIGHTWHITE_EX=RESET=""
+    class Fore: LIGHTRED_EX=RED=LIGHTBLACK_EX=LIGHTWHITE_EX=WHITE=RESET=""
     class Style: RESET_ALL=""
 
 R1 = Fore.LIGHTRED_EX
-R2 = Fore.RED
-D = Fore.LIGHTBLACK_EX
-W = Fore.LIGHTWHITE_EX
+R2 = Fore.LIGHTRED_EX
+D = Fore.WHITE
+W = Fore.LIGHTRED_EX
 RS = Fore.RESET
 
 if IS_WINDOWS:
@@ -69,7 +69,7 @@ def obtener_api_key(servicio):
     return API_KEYS.get(servicio, "")
 
 class Spinner:
-    def __init__(self, msg="Procesando"):
+    def __init__(self, msg="Processing"):
         self.msg = msg; self.running = False; self.t = None
     def spin(self):
         for c in "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏":
@@ -115,7 +115,7 @@ def limpiar():
     os.system("cls" if os.name == "nt" else "clear")
 
 def pausa():
-    input(f"\n  {D}Presiona Enter para continuar...{RS}")
+    input(f"\n  {D}Press Enter to continue...{RS}")
 
 def barra_progreso(actual, total, ancho=30, prefijo=""):
     pct = actual / total if total > 0 else 0
@@ -177,14 +177,14 @@ def _leer_mascarado_win(prompt):
         sys.stdout.flush()
     return valor
 
-ART = f"""{R2}    ____  ____ _  __    __________  ____  __   _____
-{R2}   / __ )/ __ \\ |/ /   /_  __/ __ \\/ __ \\/ /  / ___/
-{R2}  / __  / / / /   /     / / / / / / / / / /   \\__ \\
-{R2} / /_/ / /_/ /   |     / / / /_/ / /_/ / /______/ /
-{R2}/_____/\\____/_/|_|    /_/  \\____/\\____/_____/____/
-"""
+ART = """ ██╗  ██╗██████╗  ██████╗ ██╗   ██╗  ████████╗ ██████╗  ██████╗ ██╗     ███████╗
+ ██║ ██╔╝██╔══██╗██╔═══██╗██║   ██║  ╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔════╝
+ █████╔╝ ██████╔╝██║   ██║██║   ██║     ██║   ██║   ██║██║   ██║██║     ███████╗
+ ██╔═██╗ ██╔══██╗██║   ██║╚██╗ ██╔╝     ██║   ██║   ██║██║   ██║██║     ╚════██║
+ ██║  ██╗██║  ██║╚██████╔╝ ╚████╔╝      ██║   ╚██████╔╝╚██████╔╝███████╗███████║
+ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝   ╚═══╝       ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚══════╝"""
 
-ANCHO = 52
+ANCHO = 80
 
 def centrar(texto, ancho):
     vis = re.sub(r'\033\[[0-9;]*m', '', texto)
@@ -201,33 +201,26 @@ def ancho_terminal():
 
 def pad_centro():
     tw = ancho_terminal()
-    bw = ANCHO + 4
-    if tw <= bw: return ""
-    return " " * ((tw - bw) // 2)
+    if tw <= ANCHO: return ""
+    return " " * ((tw - ANCHO) // 2)
 
 def print_banner():
     p = pad_centro()
+    print()
+    print()
     if not MODO_COMPACTO[0]:
         for li in ART.rstrip("\n").split("\n"):
-            print(p + li)
+            print(p + R1 + li + RS)
         print()
-    print(f"{p}{R1}┌{'─' * ANCHO}┐{RS}")
-    print(f"{p}{R1}│{RS} {R2}Tool Panel v2.0{RS}  {D}[H] Help  [X] Exit  [C] Compact{RS}  {R1}│{RS}")
-    print(f"{p}{R1}└{'─' * ANCHO}┘{RS}")
 
 def barra_menu(titulo):
     p = pad_centro()
-    vis = re.sub(r'\033\[[0-9;]*m', '', titulo)
-    resto = ANCHO - len(vis) - 9
-    print(f"\n{p}{R1}┌{'─' * ANCHO}┐{RS}")
-    print(f"{p}{R1}├{RS}{R2}─── {W}{titulo}{RS} {R2}───{RS}{R1}{'─' * max(0, resto)}┤{RS}")
-    print(f"{p}{R1}└{'─' * ANCHO}┘{RS}")
+    print(f"\n{p}{R2}─── {W}{titulo}{RS} {D}{'─' * max(ANCHO - len(titulo) - 7, 1)}{RS}")
 
 def area_header(nombre):
     p = pad_centro()
-    vis = re.sub(r'\033\[[0-9;]*m', '', nombre)
-    print(f"{p}{R1}├{'─' * ANCHO}┤{RS}")
-    print(f"{p}{R1}├{RS}{R2}── {W}{nombre}{RS} {R2}──{RS}{R1}{'─' * max(0, ANCHO - len(vis) - 7)}┤{RS}")
+    print(f"{p}{D}{'─' * ANCHO}{RS}")
+    print(f"{p}{R2}── {W}{nombre}{RS} {D}{'─' * max(ANCHO - len(nombre) - 6, 1)}{RS}")
 
 def menu_en_columnas(items, cols=2):
     p = pad_centro()
@@ -261,35 +254,74 @@ def _padded(texto, ancho):
 def menu_horizontal(columnas):
     p = pad_centro()
     ncols = len(columnas)
-    col_w = ANCHO // ncols
-    partes = []
-    for nombre, _, _ in columnas:
-        txt = centrar(f"{W}{nombre}{RS}", col_w)
-        partes.append(f"{R2}{txt}{RS}")
-    print(f"{p}{R1}│{RS}{''.join(partes)}{R1}│{RS}")
-    tiene_sub = any(sub for _, sub, _ in columnas)
-    if tiene_sub:
-        partes = []
-        for _, sub, _ in columnas:
-            vis = len(sub) if sub else 0
-            left = (col_w - vis) // 2
-            right = col_w - vis - left
-            lbl = f"{D}{sub or ''}{RS}" if sub else ""
-            partes.append(f"{' ' * left}{lbl}{' ' * right}")
-        print(f"{p}{R1}│{RS}{''.join(partes)}{R1}│{RS}")
+    espacios = ncols - 1
+    anchos = []
+    for nombre, _, items in columnas:
+        vis = re.sub(r'\033\[[0-9;]*m', '', nombre)
+        max_item = max((len(k) + len(t) + 4 for k, t in items), default=0)
+        bw = max(len(vis) + 4, max_item + 2, 14)
+        anchos.append(bw)
+
+    total_base = sum(anchos) + espacios * 2
+    if total_base != ANCHO:
+        dif = ANCHO - total_base
+        while dif != 0:
+            for i in range(ncols):
+                if dif == 0:
+                    break
+                if dif > 0:
+                    anchos[i] += 1
+                    dif -= 1
+                elif dif < 0 and anchos[i] > 14:
+                    anchos[i] -= 1
+                    dif += 1
+
+    def rama(i):
+        return "├"
+
+    def tubo(i, r, total):
+        if ncols == 1:
+            return "─"
+        if r == total - 1:
+            return "└"
+        return "│"
+
+    def sub_txt(nombre, sub):
+        if sub:
+            return f" {D}({sub}){RS}"
+        return ""
+
+    def sep(i):
+        return " " if i < ncols - 1 else ""
+
+    cabeceras = []
+    for i, (nombre, sub, _) in enumerate(columnas):
+        vis = re.sub(r'\033\[[0-9;]*m', '', nombre)
+        extra = len(sub) + 3 if sub else 0
+        relleno = anchos[i] - 1 - len(vis) - extra
+        cabeceras.append(f"{R1}{rama(i)}{RS}{R2}{nombre}{RS}{sub_txt(nombre, sub)}{D}{'─' * max(relleno, 1)}{RS}{sep(i)}")
+
+    print(p + "".join(cabeceras))
+
     max_filas = max(len(items) for _, _, items in columnas)
     for r in range(max_filas):
-        partes = []
-        for _, _, items in columnas:
-            if r < len(items):
-                k, t = items[r]
-                name_w = col_w - 4
-                nt = t if len(t) <= name_w else t[:name_w-1] + "."
-                item = f"{R2}[{k}]{RS} {W}{nt:<{name_w}}{RS}"
-                partes.append(item)
+        linea = ""
+        for i in range(ncols):
+            _, _, items = columnas[i]
+            nitems = len(items)
+            offset = (max_filas - nitems) // 2
+            idx = r - offset
+            has_item = 0 <= idx < nitems
+            if has_item:
+                linea += tubo(i, idx, nitems)
+                k, t = items[idx]
+                vis = f"[{k}] {t}"
+                relleno = anchos[i] - 1 - len(vis)
+                linea += f"{R2}[{k}]{RS} {W}{t}{RS}{' ' * max(relleno, 0)}"
             else:
-                partes.append(" " * col_w)
-        print(f"{p}{R1}│{RS}{''.join(partes)}{R1}│{RS}")
+                linea += " " * anchos[i]
+            linea += sep(i)
+        print(p + linea)
 
 def relatime(ts_ms):
     diff = int(time.time() * 1000) - ts_ms
@@ -306,25 +338,25 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 def show_help():
     limpiar()
     p = pad_centro()
-    barra_menu("AYUDA - Como usar el panel")
+    barra_menu("HELP - How to use the panel")
     for li in f"""
-{W}BIENVENIDO A 0XYTOOL PANEL v2.0{RS}
-{D}Panel integral de pentesting, OSINT, redes y utilidades.{RS}
+{W}WELCOME TO KR0VTOOLS PANEL v2.0{RS}
+{D}Comprehensive pentesting, OSINT, networking and utilities panel.{RS}
 
 {R2}[1]{RS} {W}DISCORD - WEBHOOK TOOLS{RS}
-{D}  Spammer, Info, Deleter, Embed, Spoof (multi-hilo){RS}
+{D}  Spammer, Info, Deleter, Embed, Spoof (multi-thread){RS}
 
 {R2}[2]{RS} {W}DISCORD - TOKEN TOOLS{RS}
-{D}  Generator, Verifier, Mass Checker (concurrente), Nitro, Decoder{RS}
+{D}  Generator, Verifier, Mass Checker (concurrent), Nitro, Decoder{RS}
 
 {R2}[N]{RS} {W}DISCORD - SERVER NUKER{RS}
-{D}  Spam multi-canal, Delete canales, Ban All, Create canales{RS}
+{D}  Multi-channel Spam, Delete Channels, Ban All, Create Channels{RS}
 
 {R2}[3]{RS} {W}PORT SCANNER{RS}
-{D}  TCP/UDP scan, deteccion de servicios, banners, exportar JSON/HTML{RS}
+{D}  TCP/UDP scan, service detection, banners, export JSON/HTML{RS}
 
 {R2}[4]{RS} {W}OSINT TOOLS{RS}
-{D}  IP Info, IP Logger, Email/Phone Lookup, WHOIS, filtraciones{RS}
+{D}  IP Info, IP Logger, Email/Phone Lookup, WHOIS, breaches{RS}
 
 {R2}[5]{RS} {W}UTILITIES{RS}
 {D}  ID Generator, Hasher, Base64, Token Decode{RS}
@@ -341,10 +373,10 @@ def show_help():
 {R2}[9]{RS} {W}VULNERABILITY SCANNER{RS}
 {D}  SQLi, XSS, Open Redirect, SSTI, Path Traversal{RS}
 
-{R2}TECLAS:{RS}
-{W}  H{RS} {D}- Ayuda  {W}N{RS} {D}- Nuker  {W}0{RS} {D}- Volver  {W}X{RS} {D}- Salir  {W}C{RS} {D}- Compact mode  {W}Tab{RS} {D}- Autocompletar{RS}
+{R2}KEYS:{RS}
+{W}  H{RS} {D}- Help  {W}N{RS} {D}- Nuker  {W}0{RS} {D}- Back  {W}X{RS} {D}- Exit  {W}C{RS} {D}- Compact mode  {W}Tab{RS} {D}- Autocomplete{RS}
 
-{D}NOTA: Solo para uso educativo en entornos autorizados. Logs en ~/.config/0xytool/{RS}
+{D}NOTE: For educational use only in authorized environments. Logs at ~/.config/0xytool/{RS}
 """.strip("\n").split("\n"):
         print(p + "  " + li)
     pausa()

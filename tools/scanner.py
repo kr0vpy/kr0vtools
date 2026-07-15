@@ -14,7 +14,7 @@ def escanear_puerto(host, puerto, timeout):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
         if s.connect_ex((host, puerto)) == 0:
-            servicio = SERVICIOS.get(puerto, "Desconocido")
+            servicio = SERVICIOS.get(puerto, "Unknown")
             banner = ""
             try:
                 s.send(b"\r\n")
@@ -31,7 +31,7 @@ def escanear_puerto_udp(host, puerto, timeout):
         s.sendto(b"", (host, puerto))
         try:
             s.recvfrom(1024)
-            with lock_scan: resultados_scan.append((puerto, SERVICIOS.get(puerto, "Desconocido"), "UDP"))
+            with lock_scan: resultados_scan.append((puerto, SERVICIOS.get(puerto, "Unknown"), "UDP"))
         except: pass
         s.close()
     except: pass
@@ -43,15 +43,15 @@ def port_scanner():
         if not host: return pausa()
         try:
             ip = socket.gethostbyname(host)
-            print(f"  {R1}[+] Resuelto: {host} -> {ip}{RS}")
-        except: print(f"  {D}[!] No se pudo resolver{RS}"); return pausa()
+            print(f"  {R1}[+] Resolved: {host} -> {ip}{RS}")
+        except: print(f"  {D}[!] Could not resolve{RS}"); return pausa()
 
-        modo = input(f"  {R2}Modo (T=TCP, U=UDP, A=ambos) [T]{RS} > ").strip().upper() or "T"
-        rango = input(f"  {R2}Puertos (1-1000, 80,443 o Enter para comunes){RS} > ").strip()
+        modo = input(f"  {R2}Mode (T=TCP, U=UDP, B=both) [T]{RS} > ").strip().upper() or "T"
+        rango = input(f"  {R2}Ports (1-1000, 80,443 or Enter for common){RS} > ").strip()
         puertos = []
         if not rango:
             puertos = list(SERVICIOS.keys())
-            print(f"  {D}[+] Escaneando {len(puertos)} puertos comunes{RS}")
+            print(f"  {D}[+] Scanning {len(puertos)} common ports{RS}")
         else:
             for parte in rango.split(","):
                 parte = parte.strip()
@@ -60,11 +60,11 @@ def port_scanner():
                         i, f = map(int, parte.split("-"))
                         puertos.extend(range(i, f+1))
                     else: puertos.append(int(parte))
-                except: print(f"  {D}[!] Rango invalido: {parte}{RS}"); return pausa()
+                except: print(f"  {D}[!] Invalid range: {parte}{RS}"); return pausa()
 
         timeout = 0.3 if len(puertos) > 500 else 0.5 if len(puertos) > 100 else 1.0
         resultados_scan.clear()
-        sp = Spinner("Escaneando puertos"); sp.start()
+        sp = Spinner("Scanning ports"); sp.start()
         hilos = []
         for p in puertos:
             if modo in ("T", "A"):
@@ -78,20 +78,20 @@ def port_scanner():
 
         datos = [{"puerto": p, "servicio": sv, "banner": bn} for p, sv, bn in sorted(resultados_scan)]
         if datos:
-            opc = input(f"  {R2}Exportar? (J=JSON, H=HTML, N=no) [N]{RS} > ").strip().upper()
+            opc = input(f"  {R2}Export? (J=JSON, H=HTML, N=no) [N]{RS} > ").strip().upper()
             if opc == "J":
                 path = exportar_json(f"scan_{ip}.json", datos)
-                print(f"  {R1}[+] Guardado en {path}{RS}")
+                print(f"  {R1}[+] Saved to {path}{RS}")
             elif opc == "H":
-                path = exportar_html(f"scan_{ip}.html", f"Scan: {ip}", ["Puerto","Servicio","Banner"],
+                path = exportar_html(f"scan_{ip}.html", f"Scan: {ip}", ["Port","Service","Banner"],
                                      [[str(p), sv, bn] for p, sv, bn in sorted(resultados_scan)])
-                print(f"  {R1}[+] Reporte HTML en {path}{RS}")
+                print(f"  {R1}[+] HTML report at {path}{RS}")
 
-        print(f"\n  {R1}[+] {len(resultados_scan)} puertos abiertos{RS}")
+        print(f"\n  {R1}[+] {len(resultados_scan)} open ports{RS}")
         if resultados_scan:
-            print(f"\n  {R2}{'PUERTO':<8} {'SERVICIO':<18} {'BANNER'}{RS}")
+            print(f"\n  {R2}{'PORT':<8} {'SERVICE':<18} {'BANNER'}{RS}")
             print(f"  {'─' * 56}")
             for p, sv, bn in sorted(resultados_scan):
                 print(f"  {W}{p:<8} {sv:<18} {bn}{RS}")
-    except KeyboardInterrupt: print(f"\n  {D}[!] Cancelado{RS}")
+    except KeyboardInterrupt: print(f"\n  {D}[!] Cancelled{RS}")
     pausa()

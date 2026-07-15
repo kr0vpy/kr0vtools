@@ -1,4 +1,4 @@
-"""Plugin system: carga dinámica de herramientas desde ~/.config/0xytool/plugins/"""
+"""Plugin system: dynamic tool loading from ~/.config/0xytool/plugins/"""
 from tools.base import *
 
 PLUGIN_DIR = os.path.join(CONFIG_DIR, "plugins")
@@ -23,9 +23,9 @@ def cargar_plugins():
                     menu_fn = getattr(mod, "menu", None) or getattr(mod, "run", None)
                     if menu_fn:
                         _plugins.append({"name": nombre, "desc": desc, "fn": menu_fn, "file": fname})
-                        log_evento(f"Plugin cargado: {nombre}")
+                        log_evento(f"Plugin loaded: {nombre}")
             except Exception as e:
-                log_evento(f"Error cargando plugin {fname}: {e}")
+                log_evento(f"Error loading plugin {fname}: {e}")
 
 def listar_plugins():
     if not _plugins: cargar_plugins()
@@ -44,12 +44,12 @@ def menu_plugins():
             barra_menu("PLUGINS")
             print()
             if not plugins:
-                print(f"  {D}[!] No hay plugins instalados.{RS}")
-                print(f"  {D}Agrega scripts .py en: {PLUGIN_DIR}{RS}")
-                print(f"  {D}Cada plugin debe tener PLUGIN_NAME, PLUGIN_DESC y una funcion menu() o run(){RS}")
+                print(f"  {D}[!] No plugins installed.{RS}")
+                print(f"  {D}Add .py scripts at: {PLUGIN_DIR}{RS}")
+                print(f"  {D}Each plugin must have PLUGIN_NAME, PLUGIN_DESC and a menu() or run() function{RS}")
             else:
                 items = [(str(i+1), f"{p['name']}: {p['desc']}") for i, p in enumerate(plugins)]
-                items.append(("0", "Volver"))
+                items.append(("0", "Back"))
                 menu_en_columnas(items)
             print()
             op = input(f"  {R2}>>{RS} ").strip()

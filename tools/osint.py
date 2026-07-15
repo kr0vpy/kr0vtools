@@ -7,36 +7,36 @@ IS_WIN = platform.system() == "Windows"
 
 def osint_ip():
     limpiar(); barra_menu("OSINT - IP INFO")
-    ip = input(f"  {R2}Direccion IP{RS} > ").strip()
+    ip = input(f"  {R2}IP Address{RS} > ").strip()
     if not ip: return pausa()
     print()
     try:
         req = urllib.request.Request(f"http://ip-api.com/json/{ip}?fields=66846719", headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r: d = json.loads(r.read().decode())
-        if d.get("status") == "fail": print(f"  {D}[!] IP invalida o no encontrada{RS}")
+        if d.get("status") == "fail": print(f"  {D}[!] Invalid or not found IP{RS}")
         else:
             for nombre, key in [("IP","query"),("ISP","isp"),("Org","org"),("AS","as"),
-                ("Pais","country"),("Region","regionName"),("Ciudad","city"),("Zip","zip"),
-                ("Lat","lat"),("Lon","lon"),("Zona Horaria","timezone")]:
+                ("Country","country"),("Region","regionName"),("City","city"),("Zip","zip"),
+                ("Lat","lat"),("Lon","lon"),("Timezone","timezone")]:
                 print(f"  {R2}{nombre+':':<15}{RS} {W}{d.get(key, 'N/A')}{RS}")
     except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
 
 def osint_ip_logger():
     limpiar(); barra_menu("OSINT - IP LOGGER")
-    print(f"  {D}Crea un link para rastrear la IP del visitante.{RS}\n")
-    url_destino = input(f"  {R2}URL de destino{RS} > ").strip()
+    print(f"  {D}Creates a link to track the visitor's IP.{RS}\n")
+    url_destino = input(f"  {R2}Destination URL{RS} > ").strip()
     if not url_destino: return pausa()
-    print(f"\n  {R2}Servicios:{RS}")
+    print(f"\n  {R2}Services:{RS}")
     print(f"    {W}[1] grabify.link{RS}")
     print(f"    {W}[2] iplogger.org{RS}")
-    serv = input(f"\n  {R2}Selecciona{RS} > ").strip()
+    serv = input(f"\n  {R2}Select{RS} > ").strip()
     if serv == "1":
         link = f"https://grabify.link/{base64.urlsafe_b64encode(url_destino.encode()).decode().rstrip('=')[:8]}"
     elif serv == "2":
         link = f"https://iplogger.org/2b{base64.urlsafe_b64encode(url_destino.encode()).decode().rstrip('=')[:6]}"
-    else: print(f"  {D}[!] Opcion invalida{RS}"); return pausa()
-    print(f"\n  {R1}[+] Link generado:{RS}")
+    else: print(f"  {D}[!] Invalid option{RS}"); return pausa()
+    print(f"\n  {R1}[+] Generated link:{RS}")
     print(f"  {W}{link}{RS}")
     pausa()
 
@@ -44,30 +44,30 @@ def osint_email():
     limpiar(); barra_menu("OSINT - EMAIL LOOKUP")
     email = input(f"  {R2}Email{RS} > ").strip()
     if not email or "@" not in email: return pausa()
-    print(f"\n  {D}[+] Buscando informacion...{RS}\n")
+    print(f"\n  {D}[+] Looking up info...{RS}\n")
     dominio = email.split("@")[1]
     print(f"  {R2}Email:{RS}    {W}{email}{RS}")
-    print(f"  {R2}Dominio:{RS}   {W}{dominio}{RS}")
-    print(f"  {R2}Usuario:{RS}   {W}{email.split('@')[0]}{RS}")
+    print(f"  {R2}Domain:{RS}   {W}{dominio}{RS}")
+    print(f"  {R2}User:{RS}   {W}{email.split('@')[0]}{RS}")
     try:
         req = urllib.request.Request(f"https://isitarealemail.com/api/email/validate?email={email}", headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=10) as r:
             d = json.loads(r.read().decode())
             print(f"  {R2}Estado:{RS}    {W}{d.get('status', 'unknown')}{RS}")
-    except: print(f"  {D}[!] No se pudo validar{RS}")
+    except: print(f"  {D}[!] Could not validate{RS}")
     try:
         req2 = urllib.request.Request(f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}", headers={"User-Agent": UA})
         with urllib.request.urlopen(req2, timeout=10) as r:
             breaches = json.loads(r.read().decode())
             if breaches:
-                print(f"  {D}Filtraciones: {len(breaches)}{RS}")
+                print(f"  {D}Breaches: {len(breaches)}{RS}")
                 for b in breaches[:5]: print(f"    - {b.get('Name', '?')} ({b.get('BreachDate', '?')})")
     except: pass
     pausa()
 
 def osint_phone():
     limpiar(); barra_menu("OSINT - PHONE LOOKUP")
-    numero = input(f"  {R2}Numero (+codigo, ej: +521234567890){RS} > ").strip()
+    numero = input(f"  {R2}Number (+code, eg: +521234567890){RS} > ").strip()
     if not numero: return pausa()
     print()
     try:
@@ -75,21 +75,21 @@ def osint_phone():
         from phonenumbers import carrier, geocoder, timezone
         num = phonenumbers.parse(numero)
         valido = phonenumbers.is_valid_number(num)
-        print(f"  {R2}Numero:{RS}  {W}{numero}{RS}")
-        print(f"  {R2}Valido:{RS}  {W}{valido}{RS}")
+        print(f"  {R2}Number:{RS}  {W}{numero}{RS}")
+        print(f"  {R2}Valid:{RS}  {W}{valido}{RS}")
         if valido:
-            print(f"  {R2}Pais:{RS}     {W}{geocoder.description_for_number(num, 'es')}{RS}")
+            print(f"  {R2}Country:{RS}     {W}{geocoder.description_for_number(num, 'es')}{RS}")
             print(f"  {R2}Region:{RS}   {W}{geocoder.description_for_valid_number(num, 'es')}{RS}")
-            print(f"  {R2}Operador:{RS} {W}{carrier.name_for_number(num, 'es')}{RS}")
-            print(f"  {R2}Zona:{RS}     {W}{', '.join(timezone.time_zones_for_number(num))}{RS}")
+            print(f"  {R2}Carrier:{RS} {W}{carrier.name_for_number(num, 'es')}{RS}")
+            print(f"  {R2}Timezone:{RS}     {W}{', '.join(timezone.time_zones_for_number(num))}{RS}")
     except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
 
 def osint_whois():
     limpiar(); barra_menu("OSINT - WHOIS")
-    dominio = input(f"  {R2}Dominio (ej: google.com){RS} > ").strip()
+    dominio = input(f"  {R2}Domain (eg: google.com){RS} > ").strip()
     if not dominio: return pausa()
-    print(f"\n  {D}[+] Consultando WHOIS...{RS}\n")
+    print(f"\n  {D}[+] Looking up WHOIS...{RS}\n")
     if IS_WIN:
         try:
             req = urllib.request.Request(f"https://who.is/whois/{dominio}", headers={"User-Agent": UA})
@@ -104,17 +104,17 @@ def osint_whois():
                         for l in lines[:30]:
                             print(f"  {W}{l.strip()}{RS}")
                     else:
-                        print(f"  {D}[!] No se pudieron obtener datos WHOIS via web{RS}")
+                        print(f"  {D}[!] Could not get WHOIS data via web{RS}")
         except Exception as e:
             print(f"  {D}[!] Error: {e}{RS}")
-            print(f"  {D}Sugerencia: Instala whois via 'choco install whois' o usa who.is en tu navegador{RS}")
+            print(f"  {D}Tip: Install whois via 'choco install whois' or use who.is in your browser{RS}")
     else:
         try:
             import subprocess
             res = subprocess.run(["whois", dominio], capture_output=True, text=True, timeout=15)
             if res.returncode == 0 and res.stdout.strip(): print(f"  {W}{res.stdout[:1500]}{RS}")
-            else: print(f"  {D}[!] No se encontraron datos{RS}")
-        except FileNotFoundError: print(f"  {D}[!] whois no instalado. Instala: sudo apt install whois{RS}")
+            else: print(f"  {D}[!] No data found{RS}")
+        except FileNotFoundError: print(f"  {D}[!] whois not installed. Install: sudo apt install whois{RS}")
         except subprocess.TimeoutExpired: print(f"  {D}[!] Timeout{RS}")
         except Exception as e: print(f"  {D}[!] Error: {e}{RS}")
     pausa()
@@ -146,7 +146,7 @@ def osint_username():
     limpiar(); barra_menu("OSINT - USERNAME CHECK")
     username = input(f"  {R2}Username{RS} > ").strip()
     if not username: return pausa()
-    print(f"\n  {D}[+] Buscando '{username}' en {len(PLATAFORMAS)} plataformas...{RS}\n")
+    print(f"\n  {D}[+] Searching '{username}' across {len(PLATAFORMAS)} platforms...{RS}\n")
 
     def check(plataforma, url_tpl):
         url = url_tpl.format(username)
@@ -171,42 +171,42 @@ def osint_username():
     errores = sum(1 for r in resultados if r[2] is None)
 
     print(f"  {R2}{'─' * 46}{RS}")
-    print(f"  {R1}[+] ENCONTRADO ({len(encontrados)}){RS}")
+    print(f"  {R1}[+] FOUND ({len(encontrados)}){RS}")
     print(f"  {R2}{'─' * 46}{RS}")
     for p, url, _ in encontrados:
         print(f"  {W}{p:<14}{RS} {D}{url}{RS}")
 
     if no_encontrados:
         print(f"\n  {R2}{'─' * 46}{RS}")
-        print(f"  {D}[-] NO ENCONTRADO ({len(no_encontrados)}){RS}")
+        print(f"  {D}[-] NOT FOUND ({len(no_encontrados)}){RS}")
         print(f"  {R2}{'─' * 46}{RS}")
         for p, _, _ in no_encontrados:
             print(f"  {D}  {p}{RS}")
 
     if errores:
-        print(f"\n  {D}[!] {errores} plataforma(s) no pudieron ser verificadas{RS}")
+        print(f"\n  {D}[!] {errores} platform(s) could not be verified{RS}")
     pausa()
 
 def osint_metadata():
     limpiar(); barra_menu("OSINT - METADATA EXTRACTOR")
-    ruta = input(f"  {R2}Ruta del archivo{RS} > ").strip().strip('"').strip("'")
+    ruta = input(f"  {R2}File path{RS} > ").strip().strip('"').strip("'")
     if not ruta or not os.path.exists(ruta):
-        print(f"  {D}[!] Archivo no encontrado{RS}")
+        print(f"  {D}[!] File not found{RS}")
         return pausa()
 
     ext = os.path.splitext(ruta)[1].lower()
-    print(f"\n  {D}[+] Extrayendo metadatos...{RS}\n")
+    print(f"\n  {D}[+] Extracting metadata...{RS}\n")
 
-    meta = {"Archivo": os.path.basename(ruta), "Tamaño": f"{os.path.getsize(ruta):,} bytes"}
+    meta = {"File": os.path.basename(ruta), "Size": f"{os.path.getsize(ruta):,} bytes"}
 
     if ext in (".jpg", ".jpeg", ".tiff", ".tif"):
         try:
             from PIL import Image
             from PIL.ExifTags import TAGS
             img = Image.open(ruta)
-            meta["Dimensiones"] = f"{img.size[0]}x{img.size[1]}"
-            meta["Formato"] = img.format
-            meta["Modo"] = img.mode
+            meta["Dimensions"] = f"{img.size[0]}x{img.size[1]}"
+            meta["Format"] = img.format
+            meta["Mode"] = img.mode
             exif = img._getexif()
             if exif:
                 for tag_id, valor in exif.items():
@@ -222,9 +222,9 @@ def osint_metadata():
         try:
             from PIL import Image
             img = Image.open(ruta)
-            meta["Dimensiones"] = f"{img.size[0]}x{img.size[1]}"
-            meta["Formato"] = img.format
-            meta["Modo"] = img.mode
+            meta["Dimensions"] = f"{img.size[0]}x{img.size[1]}"
+            meta["Format"] = img.format
+            meta["Mode"] = img.mode
             for k, v in img.info.items():
                 if isinstance(v, bytes):
                     try: v = v.decode("utf-8", errors="replace")
@@ -237,7 +237,7 @@ def osint_metadata():
         try:
             import fitz
             doc = fitz.open(ruta)
-            meta["Paginas"] = str(len(doc))
+            meta["Pages"] = str(len(doc))
             md = doc.metadata
             for k, v in md.items():
                 if v: meta[f"PDF:{k.capitalize()}"] = v
@@ -247,7 +247,7 @@ def osint_metadata():
                 import PyPDF2
                 with open(ruta, "rb") as f:
                     r = PyPDF2.PdfReader(f)
-                    meta["Paginas"] = str(len(r.pages))
+                    meta["Pages"] = str(len(r.pages))
                     md = r.metadata
                     if md:
                         for k, v in md.items():
@@ -267,9 +267,9 @@ def osint_metadata():
             from mutagen.mp4 import MP4
             tipos = {".mp3": MP3, ".flac": FLAC, ".ogg": OggVorbis, ".wav": WAVE, ".m4a": MP4}
             audio = tipos[ext](ruta)
-            meta["Duracion"] = f"{audio.info.length:.1f}s"
+            meta["Duration"] = f"{audio.info.length:.1f}s"
             meta["Bitrate"] = f"{getattr(audio.info, 'bitrate', 0) // 1000} kbps"
-            meta["Frecuencia"] = f"{getattr(audio.info, 'sample_rate', 0)} Hz"
+            meta["Frequency"] = f"{getattr(audio.info, 'sample_rate', 0)} Hz"
             for k, v in audio.items():
                 meta[f"Audio:{k.capitalize()}"] = str(v)[:200]
         except Exception as e:
@@ -282,7 +282,7 @@ def osint_metadata():
             if ext == ".m4a" or ext == ".mp4":
                 try:
                     mp4 = MP4(ruta)
-                    meta["Duracion"] = f"{mp4.info.length:.1f}s"
+                    meta["Duration"] = f"{mp4.info.length:.1f}s"
                     meta["Bitrate"] = f"{getattr(mp4.info, 'bitrate', 0) // 1000} kbps"
                     for k, v in mp4.items():
                         meta[f"Video:{k.capitalize()}"] = str(v)[:200]
@@ -290,8 +290,8 @@ def osint_metadata():
         except: pass
 
     else:
-        print(f"  {D}[!] Formato no soportado: {ext}{RS}")
-        print(f"  {D}    Soportados: jpg, png, tiff, pdf, mp3, flac, ogg, wav, m4a, mp4{RS}")
+        print(f"  {D}[!] Unsupported format: {ext}{RS}")
+        print(f"  {D}    Supported: jpg, png, tiff, pdf, mp3, flac, ogg, wav, m4a, mp4{RS}")
         return pausa()
 
     print(f"  {R2}{'─' * 46}{RS}")
@@ -299,10 +299,10 @@ def osint_metadata():
         print(f"  {W}{k+':':<25}{RS} {D}{v}{RS}")
     print(f"  {R2}{'─' * 46}{RS}")
 
-    guardar = input(f"\n  {R2}Exportar JSON? (s/N){RS} > ").strip().lower()
-    if guardar == "s":
+    guardar = input(f"\n  {R2}Export JSON? (y/N){RS} > ").strip().lower()
+    if guardar == "y":
         path = exportar_json(f"metadata_{int(time.time())}.json", meta)
-        print(f"  {R1}[+] Guardado en {path}{RS}")
+        print(f"  {R1}[+] Saved to {path}{RS}")
     pausa()
 
 def menu_osint():
@@ -311,7 +311,7 @@ def menu_osint():
             limpiar(); print_banner()
             barra_menu("OSINT TOOLS")
             print()
-            menu_en_columnas([("1","IP Info"),("2","IP Logger"),("3","Email Lookup"),("4","Phone Lookup"),("5","WHOIS"),("6","Username Check"),("7","Metadata Extractor"),("",""),("0","Volver")])
+            menu_en_columnas([("1","IP Info"),("2","IP Logger"),("3","Email Lookup"),("4","Phone Lookup"),("5","WHOIS"),("6","Username Check"),("7","Metadata Extractor"),("",""),("0","Back")])
             print()
             op = input(f"  {R2}>>{RS} ").strip().lower()
             if op == "1": osint_ip()

